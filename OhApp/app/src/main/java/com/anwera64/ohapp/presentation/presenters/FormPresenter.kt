@@ -8,7 +8,7 @@ class FormPresenter(private val view: FormPresenterDelegate) {
     private val db = FirebaseDatabase.getInstance().reference
     private val currentUser = FirebaseAuth.getInstance().currentUser
 
-    fun saveForm(values: HashMap<String, Any>) {
+    private fun saveForm(values: HashMap<String, Any>) {
         currentUser?.let {
             db.child(it.uid)
                 .setValue(values)
@@ -23,6 +23,8 @@ class FormPresenter(private val view: FormPresenterDelegate) {
         values["surname"] = surname
         values["age"] = age
         values["birthDate"] = birthDate
+
+        saveForm(values)
     }
 }
 
