@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Oh! App</string>
+
+    <string name="facebook_app_id">385896905590222</string>
+    <string name="fb_login_protocol_scheme">fb385896905590222</string>
+    <string name="obligatory_error">Este campo es obligatorio</string>
+</resources>

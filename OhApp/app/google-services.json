@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "233359643058",
+    "firebase_url": "https://oh-app-4c743.firebaseio.com",
+    "project_id": "oh-app-4c743",
+    "storage_bucket": "oh-app-4c743.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233359643058:android:a1e2dbbb588bc750",
+        "android_client_info": {
+          "package_name": "com.anwera64.ohapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233359643058-36avkbiv6cua673kjrsr7u2husectojf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC76v__uia3d_OKfIRCkHUg_LO5m_Kx370"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233359643058-36avkbiv6cua673kjrsr7u2husectojf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
