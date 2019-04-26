@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity(), MainPresenterDelegate, PhoneDialogFrag
 
     override fun onLogin() {
         val intent = Intent(this, FormActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
         startActivity(intent)
     }
 

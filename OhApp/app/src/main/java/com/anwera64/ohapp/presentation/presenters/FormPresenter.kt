@@ -1,19 +1,30 @@
 package com.anwera64.ohapp.presentation.presenters
 
+import android.text.format.DateFormat
+import com.facebook.AccessToken
+import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
 class FormPresenter(private val view: FormPresenterDelegate) {
     private val db = FirebaseDatabase.getInstance().reference
-    val currentUser = FirebaseAuth.getInstance().currentUser
+    private val auth = FirebaseAuth.getInstance()
 
-     fun saveForm(values: HashMap<String, Any>) {
-        currentUser?.let {
-            db.child(it.uid)
+    private fun saveForm(values: HashMap<String, Any>) {
+        auth.currentUser?.let {
+            db.child("${it.uid}/${UUID.randomUUID()}")
                 .setValue(values)
                 .addOnCompleteListener { view.onSaved() }
-                .addOnFailureListener { exception ->  view.onError(exception.message) }
+                .addOnFailureListener { exception -> view.onError(exception.message) }
+        }
+    }
+
+    fun logout() {
+        auth.signOut()
+
+        AccessToken.getCurrentAccessToken()?.let {
+            LoginManager.getInstance().logOut()
         }
     }
 
@@ -22,7 +33,7 @@ class FormPresenter(private val view: FormPresenterDelegate) {
         values["name"] = name
         values["surname"] = surname
         values["age"] = age
-        values["birthDate"] = birthDate
+        values["birthDate"] = DateFormat.format("dd/MM/yy", birthDate)
 
         saveForm(values)
     }

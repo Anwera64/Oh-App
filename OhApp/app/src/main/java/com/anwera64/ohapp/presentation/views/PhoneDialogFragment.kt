@@ -12,6 +12,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import com.anwera64.ohapp.R
+import com.anwera64.ohapp.presentation.extensions.checkEditText
 import kotlinx.android.synthetic.main.fragment_phone_dialog.*
 import kotlin.properties.ObservableProperty
 import kotlin.reflect.KProperty
@@ -21,6 +22,7 @@ class PhoneDialogFragment : DialogFragment() {
 
     lateinit var delegate: PhoneDialogDelegate
     private var tilPhone: TextInputLayout? = null
+    private var tilCode: TextInputLayout? = null
 
     enum class DialogState { UNSENT, SENT }
 
@@ -52,15 +54,16 @@ class PhoneDialogFragment : DialogFragment() {
         } catch (e: ClassCastException) {
             throw ClassCastException(activity.toString() + " must implement PhoneDialogDelegate")
         }
-
     }
 
     private fun onClickUnsent() {
-        if (TextUtils.isEmpty(tilPhone?.editText?.text)) {
-            tilPhone?.error = getString(com.anwera64.ohapp.R.string.obligatory_error)
-        } else {
-            delegate.onPhoneInput(tilPhone?.editText?.text.toString())
-        }
+        if (tilPhone?.checkEditText(getString(R.string.obligatory_error)) == true) return
+        if (tilCode?.checkEditText(getString(R.string.obligatory_error)) == true) return
+
+        val phoneNumber = tilPhone?.editText?.text.toString()
+        val code = tilCode?.editText?.text.toString()
+
+        delegate.onPhoneInput(code + phoneNumber)
     }
 
     private fun onClickSent() {
@@ -84,7 +87,7 @@ class PhoneDialogFragment : DialogFragment() {
         builder.setTitle(getString(R.string.confirmation_phone))
         val layout = activity?.layoutInflater?.inflate(com.anwera64.ohapp.R.layout.fragment_phone_dialog, dialogRoot)
         builder.setView(layout)
-            .setPositiveButton("Confirmar") { _, _ ->}
+            .setPositiveButton("Confirmar") { _, _ -> }
             .setNegativeButton("Cancelar") { dialog, _ ->
                 dialog.cancel()
             }
@@ -96,6 +99,7 @@ class PhoneDialogFragment : DialogFragment() {
             val positiveButton: Button = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
             positiveButton.setOnClickListener {
                 tilPhone = layout?.findViewById(R.id.tilPhone)
+                tilCode = layout?.findViewById(R.id.tilCode)
                 when (state) {
                     DialogState.UNSENT -> onClickUnsent()
                     DialogState.SENT -> onClickSent()

@@ -10,11 +10,11 @@ import java.util.*
 
 class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
 
-    interface DatePickerDeelgate {
+    interface DatePickerDelgate {
         fun onDateSelected(date: Date)
     }
 
-    private lateinit var delegate: DatePickerDeelgate
+    private lateinit var delegate: DatePickerDelgate
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val c = Calendar.getInstance()
@@ -29,7 +29,7 @@ class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         try {
-            delegate = activity as DatePickerDeelgate
+            delegate = activity as DatePickerDelgate
         } catch (e: ClassCastException) {
             throw ClassCastException(activity.toString() + " must implement DatePickerDeelgate")
         }
