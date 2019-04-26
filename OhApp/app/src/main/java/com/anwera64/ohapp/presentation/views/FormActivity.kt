@@ -68,13 +68,7 @@ class FormActivity : AppCompatActivity(), FormPresenterDelegate {
             return
         val birthDate = Date()
 
-        val values = HashMap<String, Any>()
-        values["name"] = name
-        values["surname"] = surname
-        values["age"] = age
-        values["birthDate"] = birthDate
-
-        mPresenter.saveForm(values)
+        mPresenter.saveForm(name, surname, age, birthDate)
     }
 
     private fun checkEditText(view: TextInputLayout): Boolean {

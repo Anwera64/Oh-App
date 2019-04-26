@@ -12,23 +12,26 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), MainPresenterDelegate {
+class MainActivity : AppCompatActivity(), MainPresenterDelegate, PhoneDialogFragment.PhoneDialogDelegate {
 
     private val mPresenter = MainPresenter(this)
     private val checkingNumber = false
+    private var verificationId: String? = null
     private val callbackManager by lazy { CallbackManager.Factory.create() }
+    private val dialog by lazy { PhoneDialogFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         btnCell.setOnClickListener {
-            if (!checkingNumber) onLogin()//TODO
+            dialog.show(supportFragmentManager, "PhoneDialogFragment")
         }
 
         btnFacebook.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
@@ -47,6 +50,12 @@ class MainActivity : AppCompatActivity(), MainPresenterDelegate {
             }
 
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
+
     }
 
     override fun onLogin() {
@@ -71,13 +80,27 @@ class MainActivity : AppCompatActivity(), MainPresenterDelegate {
 
                 override fun onVerificationFailed(p0: FirebaseException?) {
                     Log.e("Main", p0?.message)
+                    dialog.setError(p0?.message ?: "Revisa bien el numero")
                 }
 
                 override fun onCodeSent(p0: String?, p1: PhoneAuthProvider.ForceResendingToken?) {
                     super.onCodeSent(p0, p1)
+                    dialog.state = PhoneDialogFragment.DialogState.SENT
+                    verificationId = p0
                 }
 
             }
         )
+    }
+
+    override fun onPhoneInput(phone: String) {
+        cellphoneLogin(phone)
+    }
+
+    override fun onCodeInput(code: String) {
+        verificationId?.let {
+            val credentials = PhoneAuthProvider.getCredential(it, code)
+            mPresenter.loginWithCredential(credentials)
+        }
     }
 }

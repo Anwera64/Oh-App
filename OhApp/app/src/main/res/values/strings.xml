@@ -4,4 +4,8 @@
     <string name="facebook_application_id">385896905590222</string>
     <string name="fb_login_protocol_scheme">fb385896905590222</string>
     <string name="obligatory_error">Este campo es obligatorio</string>
+    <string name="confirm">Confirmar</string>
+    <string name="hint_phone_number">Numero Telefónico</string>
+    <string name="hint_code">Código</string>
+    <string name="confirmation_phone">Confirmación del numero telefónico</string>
 </resources>
