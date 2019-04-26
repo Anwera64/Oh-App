@@ -4,25 +4,31 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.anwera64.ohapp.R
 import com.anwera64.ohapp.presentation.presenters.MainPresenter
 import com.anwera64.ohapp.presentation.presenters.MainPresenterDelegate
-import com.anwera64.ohapp.R
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
 
+
 class MainActivity : AppCompatActivity(), MainPresenterDelegate, PhoneDialogFragment.PhoneDialogDelegate {
 
+    private val RC_SIGN_IN = 0
+
     private val mPresenter = MainPresenter(this)
-    private val checkingNumber = false
     private var verificationId: String? = null
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
     private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val dialog by lazy { PhoneDialogFragment() }
 
@@ -30,11 +36,19 @@ class MainActivity : AppCompatActivity(), MainPresenterDelegate, PhoneDialogFrag
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
         if (mPresenter.isLogged()) onLogin()
 
         btnCell.setOnClickListener {
             dialog.show(supportFragmentManager, "PhoneDialogFragment")
         }
+
+        btnGoogle.setOnClickListener { googleSignIn() }
 
         btnFacebook.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
@@ -54,10 +68,26 @@ class MainActivity : AppCompatActivity(), MainPresenterDelegate, PhoneDialogFrag
         })
     }
 
+    private fun googleSignIn() {
+        val intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(intent, RC_SIGN_IN)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)
+                mPresenter.loginWithGoogle(account!!)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+                Log.w("Main", "Google sign in failed", e)
+            }
+        }
     }
 
     override fun onLogin() {

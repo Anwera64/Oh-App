@@ -3,6 +3,8 @@
 
     <string name="facebook_application_id">385896905590222</string>
     <string name="fb_login_protocol_scheme">fb385896905590222</string>
+    <string name="google_web_client_id">350693390822-9nlt6bt5g6nqr29ogc1hp0nr6712s42o.apps.googleusercontent.com</string>
+
     <string name="obligatory_error">Este campo es obligatorio</string>
     <string name="confirm">Confirmar</string>
     <string name="hint_phone_number">Numero Telefónico</string>

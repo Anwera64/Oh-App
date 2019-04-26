@@ -1,14 +1,15 @@
 package com.anwera64.ohapp.presentation.presenters
 
 import com.facebook.AccessToken
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.*
 
-class MainPresenter(val view: MainPresenterDelegate) {
+class MainPresenter(private val view: MainPresenterDelegate) {
 
     private val mAuth = FirebaseAuth.getInstance()
+
 
     fun loginWithFacebook(token: AccessToken) {
         val credential = FacebookAuthProvider.getCredential(token.token)
@@ -19,6 +20,11 @@ class MainPresenter(val view: MainPresenterDelegate) {
         mAuth.signInWithCredential(credential)
             .addOnSuccessListener { view.onLogin() }
             .addOnFailureListener { exception -> view.onError(exception.message) }
+    }
+
+    fun loginWithGoogle(acct: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
+        loginWithCredential(credential)
     }
 
     fun isLogged(): Boolean {
