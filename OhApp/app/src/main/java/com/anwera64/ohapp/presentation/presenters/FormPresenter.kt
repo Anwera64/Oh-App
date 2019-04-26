@@ -22,10 +22,6 @@ class FormPresenter(private val view: FormPresenterDelegate) {
 
     fun logout() {
         auth.signOut()
-
-        AccessToken.getCurrentAccessToken()?.let {
-            LoginManager.getInstance().logOut()
-        }
     }
 
     fun saveForm(name: String, surname: String, age: String, birthDate: Date) {
