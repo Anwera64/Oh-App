@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.util.Log
 import android.widget.Toast
 import com.anwera64.ohapp.R
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.activity_form.*
 import kotlinx.android.synthetic.main.activity_form.view.*
 import java.util.*
 
-class FormActivity : AppCompatActivity(), FormPresenterDelegate {
+class FormActivity : AppCompatActivity(), FormPresenterDelegate, DatePickerFragment.DatePickerDeelgate {
 
     private val mPresenter = FormPresenter(this)
     private val RC_SIGN_IN = 0
@@ -25,30 +26,17 @@ class FormActivity : AppCompatActivity(), FormPresenterDelegate {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_form)
 
-        val providers = arrayListOf(
-            AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.PhoneBuilder().build(),
-            AuthUI.IdpConfig.FacebookBuilder().build()
-        )
+        btnAdd.setOnClickListener { checkForCompletion() }
+        tilDate.editText?.setOnClickListener {
+            val picker = DatePickerFragment()
+            picker.show(supportFragmentManager, "DatePickerFragment")
 
-        if (mPresenter.currentUser == null) {
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(providers)
-                    .build(),
-                RC_SIGN_IN
-            )
-        } else {
-            btnAdd.setOnClickListener { checkForCompletion() }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) btnAdd.setOnClickListener { checkForCompletion() }
-        else Toast.makeText(this, "No se logueo correctamente", Toast.LENGTH_LONG).show()
-
+    override fun onDateSelected(date: Date) {
+        val dateString = DateFormat.format("dd/MM/yyyy", date).toString()
+        tilDate.editText?.setText(dateString)
     }
 
     private fun checkForCompletion() {
@@ -64,7 +52,7 @@ class FormActivity : AppCompatActivity(), FormPresenterDelegate {
             return
         val age = tilAge.editText?.text.toString()
 
-        if (TextUtils.isEmpty(etDate.text))
+        if (checkEditText(tilDate))
             return
         val birthDate = Date()
 

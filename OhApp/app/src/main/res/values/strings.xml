@@ -8,4 +8,8 @@
     <string name="hint_phone_number">Numero Telefónico</string>
     <string name="hint_code">Código</string>
     <string name="confirmation_phone">Confirmación del numero telefónico</string>
+    <string name="fecha_de_nacimiento">Fecha de nacimiento</string>
+    <string name="age">Edad</string>
+    <string name="surname">Apellido</string>
+    <string name="name">Nombre</string>
 </resources>

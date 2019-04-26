@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity(), MainPresenterDelegate, PhoneDialogFrag
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        if (mPresenter.isLogged()) onLogin()
+
         btnCell.setOnClickListener {
             dialog.show(supportFragmentManager, "PhoneDialogFragment")
         }

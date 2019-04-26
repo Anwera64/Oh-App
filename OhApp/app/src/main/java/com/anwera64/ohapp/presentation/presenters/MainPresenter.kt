@@ -20,6 +20,11 @@ class MainPresenter(val view: MainPresenterDelegate) {
             .addOnSuccessListener { view.onLogin() }
             .addOnFailureListener { exception -> view.onError(exception.message) }
     }
+
+    fun isLogged(): Boolean {
+        mAuth.currentUser?.let { return true }
+        return false
+    }
 }
 
 interface MainPresenterDelegate {
